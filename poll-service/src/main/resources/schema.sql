@@ -1,0 +1,10 @@
+DROP TABLE IF EXISTS poll;
+
+CREATE TABLE poll (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    question_title VARCHAR(200) NOT NULL DEFAULT '',
+    option_one VARCHAR(100) NOT NULL DEFAULT '',
+    option_two VARCHAR(100) NOT NULL DEFAULT '',
+    option_three VARCHAR(100) NOT NULL DEFAULT '',
+    option_four VARCHAR(100) NOT NULL DEFAULT ''
+)
