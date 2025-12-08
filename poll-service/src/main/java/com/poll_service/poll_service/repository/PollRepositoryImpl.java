@@ -23,7 +23,7 @@ public class PollRepositoryImpl implements PollRepository{
 
         jdbcTemplate.update(
                 sql,
-                poll.getQuestionTitle(),
+                poll.getTitle(),
                 poll.getOptionOne(),
                 poll.getOptionTwo(),
                 poll.getOptionThree(),
@@ -37,7 +37,8 @@ public class PollRepositoryImpl implements PollRepository{
     public Poll getPollById(Long id) {
         String sql = "SELECT * FROM " + POLL_TABLE_NAME + " WHERE id = ?";
 
-        return jdbcTemplate.queryForObject(sql, new PollMapper(), id);
+        List<Poll> result = jdbcTemplate.query(sql, new PollMapper(), id);
+        return result.isEmpty() ? null : result.get(0);
     }
 
     @Override
@@ -46,7 +47,7 @@ public class PollRepositoryImpl implements PollRepository{
 
         jdbcTemplate.update(
                 sql,
-                poll.getQuestionTitle(),
+                poll.getTitle(),
                 poll.getOptionOne(),
                 poll.getOptionTwo(),
                 poll.getOptionThree(),

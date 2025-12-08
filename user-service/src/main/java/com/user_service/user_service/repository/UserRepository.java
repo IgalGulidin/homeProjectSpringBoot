@@ -10,4 +10,5 @@ public interface UserRepository {
     User getUserById(Long id);
     List<User> getAllUsers();
     void deleteUser(Long id);
+    User getUserByEmail(String email);
 }

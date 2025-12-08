@@ -40,7 +40,7 @@ public class Poll {
         return this.id;
     }
 
-    public String getQuestionTitle() {
+    public String getTitle() {
         return this.questionTitle;
     }
 
