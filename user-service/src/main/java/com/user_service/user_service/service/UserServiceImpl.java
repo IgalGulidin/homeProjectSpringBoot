@@ -1,5 +1,6 @@
 package com.user_service.user_service.service;
 
+import com.user_service.user_service.client.PollClient;
 import com.user_service.user_service.model.User;
 import com.user_service.user_service.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,9 @@ import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
+
+    @Autowired
+    private PollClient pollClient;
 
     @Autowired
     private UserRepository userRepository;
@@ -36,6 +40,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void deleteUser(Long id) {
+
+        userRepository.getUserById(id);
+        pollClient.deleteAnswersByUser(id);
         userRepository.deleteUser(id);
     }
 

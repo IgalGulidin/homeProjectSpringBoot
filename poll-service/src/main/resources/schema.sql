@@ -15,5 +15,15 @@ CREATE TABLE poll_answers (
     user_id INT NOT NULL,
     poll_id INT NOT NULL,
     selected_option INT NOT NULL,
-    FOREIGN KEY (poll_id) REFERENCES poll(id)
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT foreign_key_poll_answers_poll
+        FOREIGN KEY (poll_id) REFERENCES poll(id)
+        ON DELETE CASCADE,
+
+    CONSTRAINT check_selected_option
+        CHECK (selected_option BETWEEN 1 AND 4),
+
+    CONSTRAINT unique_user_poll
+        UNIQUE (user_id, poll_id)
 );

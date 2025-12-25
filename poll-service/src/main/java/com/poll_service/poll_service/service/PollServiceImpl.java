@@ -1,11 +1,10 @@
 package com.poll_service.poll_service.service;
 
 import com.poll_service.poll_service.client.UserClient;
-import com.poll_service.poll_service.dto.AllPollsStatsResponse;
-import com.poll_service.poll_service.dto.PollStatsResponse;
-import com.poll_service.poll_service.dto.SubmitAnswerRequest;
-import com.poll_service.poll_service.dto.UserAnswerResponse;
+import com.poll_service.poll_service.dto.*;
+import com.poll_service.poll_service.exception.InvalidOptionException;
 import com.poll_service.poll_service.exception.PollNotFoundException;
+import com.poll_service.poll_service.exception.UserNotFoundException;
 import com.poll_service.poll_service.model.Poll;
 import com.poll_service.poll_service.model.PollAnswer;
 import com.poll_service.poll_service.repository.PollAnswerRepository;
@@ -61,28 +60,31 @@ public class PollServiceImpl implements PollService{
     }
 
     @Override
-    public void submitAnswer(SubmitAnswerRequest request) throws Exception {
-        var user = userClient.getUserById(request.getUserId());
-        if (user == null) {
-            throw  new Exception("User does not exist");
+    public void submitAnswer(SubmitAnswerRequest request) {
+
+        int option = request.getSelectedOption();
+        if (option < 1 || option > 4) {
+            throw new InvalidOptionException("Invalid option selected (must be 1-4)");
+        }
+
+        try {
+            userClient.getUserById(request.getUserId());
+        } catch (feign.FeignException.NotFound e) {
+            throw new UserNotFoundException("User does not exist: " + request.getUserId());
         }
 
         Poll poll = pollRepository.getPollById(request.getPollId());
         if (poll == null) {
-            throw new Exception("Poll does not exist");
+            throw new PollNotFoundException("Poll does not exist: " + request.getPollId());
         }
 
-        if (request.getSelectedOption() < 1 || request.getSelectedOption() > 4) {
-            throw new Exception("Invalid option");
-        }
-
-        pollAnswerRepository.saveAnswer(
-                new PollAnswer(
-                        request.getUserId(),
-                        request.getPollId(),
-                        request.getSelectedOption()
-                )
+        PollAnswer answer = new PollAnswer(
+                request.getUserId(),
+                request.getPollId(),
+                option
         );
+
+        pollAnswerRepository.saveAnswer(answer);
     }
 
     @Override
@@ -117,48 +119,32 @@ public class PollServiceImpl implements PollService{
 
     @Override
     public List<UserAnswerResponse> getAnswerByUser(Long userId) {
-        List<PollAnswer> answers = pollAnswerRepository.findByUserId(userId);
-
-        List<UserAnswerResponse> result = new ArrayList<>();
-
-        for (PollAnswer answer : answers) {
-            Poll poll = pollRepository.getPollById(answer.getPollId());
-            if (poll == null) continue;
-
-            UserAnswerResponse userAnswerResponse = new UserAnswerResponse();
-            userAnswerResponse.setPollId(poll.getId());
-            userAnswerResponse.setPollTitle(poll.getTitle());
-            userAnswerResponse.setSelectedOption(answer.getSelectedOption());
-
-            result.add(userAnswerResponse);
-        }
-
-
-        return result;
+        return pollAnswerRepository.findAnswersByUserId(userId);
     }
 
     @Override
     public Integer countAnswersByUser(Long userId) {
-        return pollAnswerRepository.findByUserId(userId).size();
+        return pollAnswerRepository.countByUserId(userId).intValue();
     }
 
     @Override
-    public List<AllPollsStatsResponse> getAllPollsStats() throws Exception {
+    public List<AllPollsStatsResponse> getAllPollsStats() {
         List<Poll> polls = pollRepository.getAllPolls();
         List<AllPollsStatsResponse> result = new ArrayList<>();
 
         for (Poll poll : polls) {
-            PollStatsResponse stats = getPollStats(poll.getId());
+            OptionCountResponse counts =
+                    pollAnswerRepository.getOptionCountsByPollId(poll.getId());
 
-            AllPollsStatsResponse allPollsStatsResponse = new AllPollsStatsResponse();
-            allPollsStatsResponse.setPollId(poll.getId());
-            allPollsStatsResponse.setTitle(poll.getTitle());
-            allPollsStatsResponse.setOption1Count(stats.getOption1Count());
-            allPollsStatsResponse.setOption2Count(stats.getOption2Count());
-            allPollsStatsResponse.setOption3Count(stats.getOption3Count());
-            allPollsStatsResponse.setOption4Count(stats.getOption4Count());
+            AllPollsStatsResponse response = new AllPollsStatsResponse();
+            response.setPollId(poll.getId());
+            response.setTitle(poll.getTitle());
+            response.setOption1Count(counts.getOption1Count());
+            response.setOption2Count(counts.getOption2Count());
+            response.setOption3Count(counts.getOption3Count());
+            response.setOption4Count(counts.getOption4Count());
 
-            result.add(allPollsStatsResponse);
+            result.add(response);
         }
 
         return result;
@@ -169,4 +155,30 @@ public class PollServiceImpl implements PollService{
         pollAnswerRepository.deleteByUserId(userId);
     }
 
+
+    @Override
+    public OptionCountResponse getOptionCounts(Long pollId) {
+        Poll poll = pollRepository.getPollById(pollId);
+        if (poll == null) {
+            throw new PollNotFoundException("Poll does not exist" + pollId);
+        }
+
+        return pollAnswerRepository.getOptionCountsByPollId(pollId);
+    }
+
+    @Override
+    public Long getTotalAnswersCount(Long pollId) {
+
+        Poll poll = pollRepository.getPollById(pollId);
+        if (poll == null) {
+            throw new PollNotFoundException("Poll does not exist" + pollId);
+        }
+
+        return pollAnswerRepository.countAnswersByPollId(pollId);
+    }
+
+    @Override
+    public Long getTotalAnsweredPollsByUser(Long userId) {
+        return pollAnswerRepository.countAnswersByUserId(userId);
+    }
 }

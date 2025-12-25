@@ -1,32 +1,22 @@
 package com.user_service.user_service.model;
 
-import jakarta.persistence.*;
 
 import java.time.LocalDate;
 
-@Entity
-@Table(name = "users")
 public class User {
 
-    @Id
     private Long id;
 
-    @Column(name = "first_name")
     private String firstName;
 
-    @Column(name = "last_name")
     private String lastName;
 
-    @Column(name = "email")
     private String email;
 
-    @Column(name = "age")
     private Integer age;
 
-    @Column(name = "address")
     private String address;
 
-    @Column(name = "joining_date")
     private LocalDate joiningDate;
 
     public User() {}

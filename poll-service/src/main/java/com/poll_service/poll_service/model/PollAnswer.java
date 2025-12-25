@@ -1,24 +1,14 @@
 package com.poll_service.poll_service.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
 
-@Entity
-@Table(name = "poll_answers")
 public class PollAnswer {
 
-    @Id
     private Long id;
 
-    @Column(name = "user_id")
     private Long userId;
 
-    @Column(name = "poll_id")
     private Long pollId;
 
-    @Column(name = "selected_option")
     private Integer selectedOption;
 
     public PollAnswer() {};

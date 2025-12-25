@@ -1,28 +1,18 @@
 package com.poll_service.poll_service.model;
 
-import jakarta.persistence.*;
 
-
-@Entity
-@Table(name = "poll")
 public class Poll {
 
-    @Id
     private Long id;
 
-    @Column(name = "question_title")
     private String questionTitle;
 
-    @Column(name = "option_one")
     private String optionOne;
 
-    @Column(name = "option_two")
     private String optionTwo;
 
-    @Column(name = "option_three")
     private String optionThree;
 
-    @Column(name = "option_four")
     private String optionFour;
 
     public Poll() {}

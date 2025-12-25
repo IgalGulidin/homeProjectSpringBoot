@@ -1,5 +1,9 @@
 package com.poll_service.poll_service.controller;
 
+import com.poll_service.poll_service.dto.AllPollsStatsResponse;
+import com.poll_service.poll_service.dto.OptionCountResponse;
+import com.poll_service.poll_service.dto.SubmitAnswerRequest;
+import com.poll_service.poll_service.dto.UserAnswerResponse;
 import com.poll_service.poll_service.model.Poll;
 import com.poll_service.poll_service.service.PollService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,5 +41,40 @@ public class PollController {
     @DeleteMapping("/delete/{id}")
     public void deletePollById(@PathVariable Long id) {
         pollService.deletePoll(id);
+    }
+
+    @PostMapping("/answer/submit")
+    public void submitAnswer(@RequestBody SubmitAnswerRequest request) throws Exception {
+        pollService.submitAnswer(request);
+    }
+
+    @GetMapping("/{pollId}/stats")
+    public OptionCountResponse getStats(@PathVariable Long pollId) {
+        return pollService.getOptionCounts(pollId);
+    }
+
+    @GetMapping("/{pollId}/answers/count")
+    public Long getTotalAnswersCount(@PathVariable Long pollId) {
+        return pollService.getTotalAnswersCount(pollId);
+    }
+
+    @GetMapping("/answers/user/{userId}")
+    public List<UserAnswerResponse> getUserAnswers(@PathVariable Long userId) {
+        return pollService.getAnswerByUser(userId);
+    }
+
+    @GetMapping("/stats/all")
+    public List<AllPollsStatsResponse> getAllStats() throws Exception{
+        return pollService.getAllPollsStats();
+    }
+
+    @GetMapping("/answers/user/{userId}/count")
+    public Long getUserAnsweredCount(@PathVariable Long userId) {
+        return pollService.getTotalAnsweredPollsByUser(userId);
+    }
+
+    @DeleteMapping("/answers/user/{userId}")
+    public void deleteAnswersByUser(@PathVariable Long userId) {
+        pollService.deleteAnswersByUser(userId);
     }
 }
