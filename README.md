@@ -1,10 +1,10 @@
-\# Poll System – Backend (Spring Boot)
+# Poll System – Backend (Spring Boot)
 
 
 
-This project implements a \*\*backend poll system\*\* using \*\*Java, Spring Boot, and H2\*\*.
+This project implements a **backend poll system** using **Java, Spring Boot, and H2**.
 
-The system is built as \*\*two independent services\*\* that communicate via REST APIs.
+The system is built as **two independent services** that communicate via REST APIs.
 
 
 
@@ -16,57 +16,35 @@ No frontend is included.
 
 
 
-\## Architecture
+## Architecture
 
 
 
-\### User Service
+### User Service
 
-\- Port: \*\*8081\*\*
+- Port: **8081**
 
-\- Manages users (customers)
+- Manages users (customers)
 
-\- Stores user data
+- Stores user data
 
-\- Calls Poll Service when a user is deleted
-
-
-
-\### Poll Service
-
-\- Port: \*\*8082\*\*
-
-\- Manages polls and answers
-
-\- Stores poll statistics
-
-\- Validates users via User Service
+- Calls Poll Service when a user is deleted
 
 
 
-Each service uses its \*\*own H2 database\*\*.
+### Poll Service
+
+- Port: **8082**
+
+- Manages polls and answers
+
+- Stores poll statistics
+
+- Validates users via User Service
 
 
 
----
-
-
-
-\## Technologies
-
-\- Java 17
-
-\- Spring Boot
-
-\- Spring Web
-
-\- Spring JDBC (JdbcTemplate)
-
-\- Spring Cloud OpenFeign
-
-\- H2 Database
-
-\- Gradle
+Each service uses its **own H2 database**.
 
 
 
@@ -74,13 +52,35 @@ Each service uses its \*\*own H2 database\*\*.
 
 
 
-\## User Service API (8081)
+## Technologies
+
+- Java 17
+
+- Spring Boot
+
+- Spring Web
+
+- Spring JDBC (JdbcTemplate)
+
+- Spring Cloud OpenFeign
+
+- H2 Database
+
+- Gradle
 
 
 
-\### Create User
+---
 
-\*\*POST\*\* `/user/create`
+
+
+## User Service API (8081)
+
+
+
+### Create User
+
+**POST** `/user/create`
 
 
 
