@@ -88,10 +88,10 @@ public class PollServiceImpl implements PollService{
     }
 
     @Override
-    public PollStatsResponse getPollStats(Long pollId) throws Exception {
+    public PollStatsResponse getPollStats(Long pollId) throws PollNotFoundException {
         Poll poll = pollRepository.getPollById(pollId);
         if (poll == null) {
-            throw new Exception("Poll not found");
+            throw new PollNotFoundException("Poll not found");
         }
 
         List<PollAnswer> answers = pollAnswerRepository.findByPollId(pollId);

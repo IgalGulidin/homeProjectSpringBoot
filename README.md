@@ -74,29 +74,8 @@ Each service uses its **own H2 database**.
 
 
 
-## User Service API (8081)
+## API Documentation
+Swagger UI is available for each service:
 
-
-
-### Create User
-
-**POST** `/user/create`
-
-
-
-```json
-
-{
-
-&nbsp; "firstName": "Igal",
-
-&nbsp; "lastName": "Gulidin",
-
-&nbsp; "email": "igal@test.com",
-
-&nbsp; "age": 25,
-
-&nbsp; "address": "Tel Aviv"
-
-}
-
+- User Service: http://localhost:8081/swagger-ui/index.html
+- Poll Service: http://localhost:8082/swagger-ui/index.html
