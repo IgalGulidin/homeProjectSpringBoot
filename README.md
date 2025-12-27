@@ -79,3 +79,5 @@ Swagger UI is available for each service:
 
 - User Service: http://localhost:8081/swagger-ui/index.html
 - Poll Service: http://localhost:8082/swagger-ui/index.html
+
+(make sure the services are running)
